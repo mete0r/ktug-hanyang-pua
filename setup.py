@@ -111,7 +111,6 @@ setup_info = {
 
     'packages': [
         'ktug_hanyang_pua',
-        'ktug_hanyang_pua.recipe',
     ],
     # do not use '.'; just omit to specify setup.py directory
     'package_dir': {
@@ -142,13 +141,10 @@ setup_info = {
             'ktug-hanyang-pua = ktug_hanyang_pua.cli:main',
         ],
         'zc.buildout': [
-            'default = ktug_hanyang_pua.recipe:Recipe',
         ],
         'zc.buildout.uninstall': [
-            'default = ktug_hanyang_pua.recipe:uninstall',
         ],
         'paste.app_factory': [
-            'main = ktug_hanyang_pua.wsgi:app_factory',
         ],
     },
     'classifiers': [

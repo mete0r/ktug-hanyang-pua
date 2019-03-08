@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #   ktug-hanyang-pua: KTUG HanYang PUA conversion table reader
-#   Copyright (C) 2015-2017 mete0r <mete0r@sarangbang.or.kr>
+#   Copyright (C) 2015-2019 mete0r <mete0r@sarangbang.or.kr>
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU Affero General Public License as published by
@@ -18,8 +18,30 @@
 #
 from __future__ import absolute_import
 from __future__ import print_function
-from __future__ import unicode_literals
-import logging
+from collections import namedtuple
 
 
-logger = logging.getLogger(__name__)
+#
+# Core structure
+#
+Mapping = namedtuple('Mapping', [
+    'source',
+    'target',
+    'comment',
+])
+
+#
+# Structures in textual representation only
+#
+Comment = namedtuple('Comment', ['text'])
+Empty = namedtuple('Empty', ())
+EMPTY = Empty()
+
+#
+# Tree representation
+#
+Node = namedtuple('Node', [
+    'parent',
+    'source',
+    'target',
+])
