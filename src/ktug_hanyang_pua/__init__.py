@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   METE0R-PROJECT: SOME_DESCRIPTION
+#   ktug-hanyang-pua: KTUG HanYang PUA conversion table reader
 #   Copyright (C) 2015-2017 mete0r <mete0r@sarangbang.or.kr>
 #
 #   This program is free software: you can redistribute it and/or modify
@@ -20,14 +20,4 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 
-def app_factory(global_config, **local_conf):
-    ''' PasteDeploy app_factory
-
-    see http://pythonpaste.org/deploy/
-    '''
-    def app(environ, start_response):
-        status = b'200 OK'
-        headers = [(b'Content-Type', b'application/json')]
-        start_response(status, headers)
-        yield b'null'
-    return app
+__version__ = '0.0.0'

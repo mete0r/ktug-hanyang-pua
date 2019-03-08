@@ -1,7 +1,7 @@
-METE0R-PROJECT
+ktug-hanyang-pua
 ==============
 
-SOME_DESCRIPTION
+KTUG HanYang PUA conversion table reader
 
 
 Production environment

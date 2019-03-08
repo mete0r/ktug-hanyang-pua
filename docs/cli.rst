@@ -1,10 +1,10 @@
 Command-line interface
 ======================
 
-METE0R-PROJECT
+ktug-hanyang-pua
 --------------
 
 .. argparse::
-   :module: METE0R_PACKAGE.cli
+   :module: ktug_hanyang_pua.cli
    :func: main_argparse
-   :prog: METE0R-PROJECT
+   :prog: ktug-hanyang-pua

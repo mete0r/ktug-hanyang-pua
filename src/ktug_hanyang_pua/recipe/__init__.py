@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   METE0R-PROJECT: SOME_DESCRIPTION
+#   ktug-hanyang-pua: KTUG HanYang PUA conversion table reader
 #   Copyright (C) 2015-2017 mete0r <mete0r@sarangbang.or.kr>
 #
 #   This program is free software: you can redistribute it and/or modify
@@ -20,4 +20,17 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 
-__version__ = '0.0.0'
+class Recipe:
+
+    def __init__(self, buildout, name, options):
+        pass
+
+    def install(self):
+        return tuple()
+
+    def update(self):
+        return tuple()
+
+
+def uninstall(name, options):
+    pass

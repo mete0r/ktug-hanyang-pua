@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   METE0R-PROJECT: SOME_DESCRIPTION
+#   ktug-hanyang-pua: KTUG HanYang PUA conversion table reader
 #   Copyright (C) 2015-2017 mete0r <mete0r@sarangbang.or.kr>
 #
 #   This program is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ def readfile(path):
 
 @setup_dir
 def get_version():
-    source = readfile('src/METE0R_PACKAGE/__init__.py')
+    source = readfile('src/ktug_hanyang_pua/__init__.py')
     version_match = re.search(r'^__version__ = [\'"]([^\'"]*)[\'"]',
                               source, re.M)
     if not version_match:
@@ -98,30 +98,30 @@ tests_require = readfile('requirements/test.in')
 
 
 setup_info = {
-    'name': 'METE0R-PROJECT',
+    'name': 'ktug-hanyang-pua',
     'version': get_version(),
-    'description': 'SOME_DESCRIPTION',
+    'description': 'KTUG HanYang PUA conversion table reader',
     'long_description': '\n'.join([readfile('README.rst'),
                                    readfile('CHANGES.rst')]),
 
     'author': 'mete0r',
     'author_email': 'mete0r@sarangbang.or.kr',
     'license': 'GNU Affero General Public License v3 or later (AGPLv3+)',
-    # 'url': 'https://github.com/mete0r/METE0R-PROJECT',
+    # 'url': 'https://github.com/mete0r/ktug-hanyang-pua',
 
     'packages': [
-        'METE0R_PACKAGE',
-        'METE0R_PACKAGE.recipe',
+        'ktug_hanyang_pua',
+        'ktug_hanyang_pua.recipe',
     ],
     # do not use '.'; just omit to specify setup.py directory
     'package_dir': {
         '': 'src',
     },
     'package_data': {
-        'METE0R_PACKAGE': [
+        'ktug_hanyang_pua': [
             'locale/*/*/*.mo',
         ],
-        # 'METE0R_PACKAGE.tests': [
+        # 'ktug_hanyang_pua.tests': [
         #   'files/*',
         # ],
     },
@@ -133,22 +133,22 @@ setup_info = {
     },
     'setup_requires': setup_requires,
     'message_extractors': {
-        'src/METE0R_PACKAGE': [
+        'src/ktug_hanyang_pua': [
             ('**.py', 'python', None),
         ]
     },
     'entry_points': {
         'console_scripts': [
-            'METE0R-PROJECT = METE0R_PACKAGE.cli:main',
+            'ktug-hanyang-pua = ktug_hanyang_pua.cli:main',
         ],
         'zc.buildout': [
-            'default = METE0R_PACKAGE.recipe:Recipe',
+            'default = ktug_hanyang_pua.recipe:Recipe',
         ],
         'zc.buildout.uninstall': [
-            'default = METE0R_PACKAGE.recipe:uninstall',
+            'default = ktug_hanyang_pua.recipe:uninstall',
         ],
         'paste.app_factory': [
-            'main = METE0R_PACKAGE.wsgi:app_factory',
+            'main = ktug_hanyang_pua.wsgi:app_factory',
         ],
     },
     'classifiers': [
