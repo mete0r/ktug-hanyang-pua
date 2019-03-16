@@ -72,8 +72,8 @@ def main():
     nodePackFormat = NodePackFormat()
     nodeDictFormat = NodeDictFormat()
 
-    if args.FILE is not None:
-        input_fp = io.open(args.FILE, 'r', encoding='utf-8')
+    if args.INPUT_FILE is not None:
+        input_fp = io.open(args.INPUT_FILE, 'r', encoding='utf-8')
     else:
         input_fp = sys.stdin
     with input_fp:
@@ -240,20 +240,23 @@ def main_argparse():
     parser.add_argument(
         '-o', '--output-file',
         action='store',
-        help=_('output file')
+        help=_('Output file. The standard output will be used if ommitted.')
     )
     parser.add_argument(
         '-m', '--data-model',
         choices=('table', 'tree'),
         default='table',
-        help=_('output data model'),
+        help=_(
+            'Data model. Note that `table\' model is suitable for encoding '
+            'and `tree\' model is suitable for decoding.'
+        ),
     )
     parser.add_argument(
         '-F', '--output-format',
         action='store',
         choices=('text', 'binary', 'json'),
         default='text',
-        help=_('output data format'),
+        help=_('Output format'),
     )
     parser.add_argument(
         '-S', '--switch',
@@ -261,11 +264,11 @@ def main_argparse():
         help=_('Switch source/targets in input mappings'),
     )
     parser.add_argument(
-        'FILE',
+        'INPUT_FILE',
         action='store',
         nargs='?',
         default=None,
-        help=_('input file'),
+        help=_('Input file. The standard input will be used if ommitted.'),
     )
     return parser
 
