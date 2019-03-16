@@ -23,14 +23,30 @@ from .models import Mapping
 
 
 def split_table(mappings):
-    target_index = 0
-    comment_index = 0
     for mapping in mappings:
         target = mapping.target
         comment = mapping.comment
         mapping = Mapping(
             source=mapping.source,
-            target=target_index,
-            comment=comment_index,
+            target=len(target),
+            comment=len(comment or ''),
         )
         yield mapping, target, comment
+
+
+def make_groups(codes):
+    groups = []
+    current_group = None
+    for code in codes:
+        if current_group is None:
+            current_group = [code, code]
+        elif current_group[-1] + 1 == code:
+            current_group[-1] = code
+        else:
+            groups.append(current_group)
+            current_group = [code, code]
+
+    if current_group is not None:
+        groups.append(current_group)
+
+    return groups

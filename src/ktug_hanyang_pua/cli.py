@@ -43,6 +43,7 @@ from .formats import NodePackFormat
 from .formats import NodeDictFormat
 from .models import Mapping
 from .table import split_table
+from .table import make_groups
 from .tree import build_tree
 
 PY3 = sys.version_info.major == 3
@@ -116,23 +117,50 @@ def main():
                         )
                         for m in mappings
                     )
+                    mappings = sorted(mappings)
+                    mappings = list(mappings)
+                    groups = make_groups(m.source for m in mappings)
                     mappings = split_table(mappings)
+                    mappings = list(mappings)
                     if args.output_file is None:
                         logger.error(
                             _('table binary format requires filename.')
                         )
                         raise SystemExit(1)
-                    target_filename = args.output_file + '.target'
-                    with io.open(target_filename, 'wb') as target_fp:
-                        for n, mapping in enumerate(mappings, 1):
-                            mapping, target, comment = mapping
-                            byteseq = mappingPackFormat.format(mapping)
-                            output_fp.write(byteseq)
-                            targetfmt = '<{}H'.format(len(target))
-                            target = struct.pack(targetfmt, *target)
-                            target_fp.write(target)
+
+                    # 그룹 갯수
+                    n_groups = len(groups)
+                    output_fp.write(struct.pack('<H', n_groups))
+
+                    # 그룹
+                    grouplengths = tuple(
+                        end - start + 1 for start, end in groups
+                    )
+                    output_fp.write(
+                        struct.pack(
+                            '<{}H'.format(len(groups)),
+                            *grouplengths
+                        )
+                    )
+
+                    # 매핑
+                    targets = []
+                    for mapping, target, comment in mappings:
+                        targets.extend(target)
+                    for n_mappings, mapping in enumerate(mappings, 1):
+                        mapping, target, comment = mapping
+                        byteseq = mappingPackFormat.format(mapping)
+                        output_fp.write(byteseq)
+
+                    # 자모 문자열
+                    targetfmt = '<{}H'.format(len(targets))
+                    target = struct.pack(targetfmt, *targets)
+                    output_fp.write(target)
+
                     logger.info(
-                        _('%s mappings have been written.'), n
+                        _('%s groups of %s mappings have been written.'),
+                        n_groups,
+                        n_mappings,
                     )
                 elif args.output_format == 'json':
                     mappings = (
