@@ -189,7 +189,7 @@ class MappingDictFormat(object):
 
     def parse(self, d):
         source = ord(d['source'])
-        target = [ord(c) for c in d['target']]
+        target = tuple(ord(c) for c in d['target'])
         if self.comment:
             comment = d['comment']
         else:

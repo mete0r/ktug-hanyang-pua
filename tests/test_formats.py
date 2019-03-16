@@ -21,6 +21,7 @@ from __future__ import print_function
 from unittest import TestCase
 
 from .fixtures import TREE
+from .fixtures import TABLE
 
 
 class LineFormatTest(TestCase):
@@ -194,6 +195,131 @@ class IterableFormatTest(TestCase):
             (1, 2, 3),
             tuple(iterableFormat.parse(iter(iterable))),
         )
+
+
+class MappingDictFormat(TestCase):
+
+    def make_one(self):
+        from ktug_hanyang_pua.formats import MappingDictFormat
+        return MappingDictFormat()
+
+    def test_format_and_parse(self):
+        from ktug_hanyang_pua.models import Mapping
+        dictFormat = self.make_one()
+
+        for index, mapping in enumerate(TABLE.MAPPINGLIST):
+            mapping = Mapping(
+                source=mapping.source[0],
+                target=mapping.target,
+                comment=mapping.comment,
+            )
+            d = dictFormat.format(mapping)
+            self.assertEqual(
+                TABLE.MAPPINGDICTS[index],
+                d,
+            )
+
+            parsed = dictFormat.parse(d)
+            parsed = Mapping(
+                source=tuple([parsed.source]),
+                target=tuple(parsed.target),
+                comment=parsed.comment,
+            )
+            self.assertEqual(
+                TABLE.MAPPINGLIST[index],
+                parsed,
+            )
+
+    def test_format_and_parse_without_comment(self):
+        from ktug_hanyang_pua.models import Mapping
+        from ktug_hanyang_pua.formats import MappingDictFormat
+        dictFormat = MappingDictFormat(comment=False)
+
+        for index, mapping in enumerate(TABLE.MAPPINGLIST):
+            mapping = Mapping(
+                source=mapping.source[0],
+                target=mapping.target,
+                comment=mapping.comment,
+            )
+            d = dictFormat.format(mapping)
+            self.assertEqual(
+                TABLE.MAPPINGDICTS_WITHOUT_COMMENT[index],
+                d,
+            )
+
+            parsed = dictFormat.parse(d)
+            parsed = Mapping(
+                source=tuple([parsed.source]),
+                target=tuple(parsed.target),
+                comment=parsed.comment,
+            )
+            self.assertEqual(
+                TABLE.MAPPINGLIST[index],
+                parsed,
+            )
+
+
+class MappingPackFormatTest(TestCase):
+
+    def make_one(self):
+        from ktug_hanyang_pua.formats import MappingPackFormat
+        return MappingPackFormat()
+
+    def test_format(self):
+        from ktug_hanyang_pua.models import Mapping
+        packFormat = self.make_one()
+
+        targets = []
+        for index, mapping in enumerate(TABLE.MAPPINGLIST):
+            targets.extend(mapping.target)
+            mapping = Mapping(
+                source=mapping.source[0],
+                target=len(mapping.target),
+                comment=mapping.comment,
+            )
+            binary = packFormat.format(mapping)
+            self.assertEqual(
+                TABLE.MAPPINGPACKS[index],
+                binary
+            )
+
+            parsed = packFormat.parse(binary)
+            parsed = Mapping(
+                source=tuple([parsed.source]),
+                target=tuple(
+                    targets[-parsed.target:]
+                    if parsed.target != 0
+                    else []
+                ),
+                comment=parsed.comment,
+            )
+            self.assertEqual(
+                TABLE.MAPPINGLIST[index],
+                parsed,
+            )
+
+
+class NodeDictFormatTest(TestCase):
+
+    def make_one(self):
+        from ktug_hanyang_pua.formats import NodeDictFormat
+        return NodeDictFormat()
+
+    def test_format(self):
+        nodeFormat = self.make_one()
+
+        for index, node in enumerate(TREE.NODELIST):
+            binary = nodeFormat.format(node)
+            self.assertEqual(
+                TREE.NODEDICTS[index],
+                binary
+            )
+
+            parsed = nodeFormat.parse(binary)
+            self.assertEqual(
+                TREE.NODELIST[index],
+                parsed,
+            )
 
 
 class NodePackFormatTest(TestCase):

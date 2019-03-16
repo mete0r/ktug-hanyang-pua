@@ -24,16 +24,155 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+_MAPPINGS = (
+    'U+E0BC => U+115F U+1161 U+11AE',
+    'U+E0BD => U+115F U+1161 U+D7CD',
+    'U+E0C6 => U+115F U+11A3',
+    'U+E0C7 => U+115F U+11A3 U+11AE',
+    'U+E0C8 => U+115F U+1163 U+11AB',
+    'U+F86A =>',
+)
+
+
+class Table:
+
+    MAPPINGS = _MAPPINGS
+
+    @property
+    def MAPPINGLIST(self):
+        from ktug_hanyang_pua.models import Mapping
+        return (
+            Mapping(
+                source=(0xE0BC, ),
+                target=(0x115F, 0x1161, 0x11AE),
+                comment=None,
+            ),
+            Mapping(
+                source=(0xE0BD, ),
+                target=(0x115F, 0x1161, 0xD7CD),
+                comment=None,
+            ),
+            Mapping(
+                source=(0xE0C6, ),
+                target=(0x115F, 0x11A3),
+                comment=None,
+            ),
+            Mapping(
+                source=(0xE0C7, ),
+                target=(0x115F, 0x11A3, 0x11AE),
+                comment=None,
+            ),
+            Mapping(
+                source=(0xE0C8, ),
+                target=(0x115F, 0x1163, 0x11AB),
+                comment=None,
+            ),
+            Mapping(
+                source=(0xF86A, ),
+                target=(),
+                comment=None,
+            ),
+        )
+
+    @property
+    def MAPPINGLIST_SWITCHED(self):
+        from ktug_hanyang_pua.models import Mapping
+        return (
+            Mapping(
+                source=(0x115F, 0x1161, 0x11AE),
+                target=(0xE0BC, ),
+                comment=None,
+            ),
+            Mapping(
+                source=(0x115F, 0x1161, 0xD7CD),
+                target=(0xE0BD, ),
+                comment=None,
+            ),
+            Mapping(
+                source=(0x115F, 0x11A3),
+                target=(0xE0C6, ),
+                comment=None,
+            ),
+            Mapping(
+                source=(0x115F, 0x11A3, 0x11AE),
+                target=(0xE0C7, ),
+                comment=None,
+            ),
+            Mapping(
+                source=(0x115F, 0x1163, 0x11AB),
+                target=(0xE0C8, ),
+                comment=None,
+            ),
+            Mapping(
+                source=(),
+                target=(0xF86A, ),
+                comment=None,
+            ),
+        )
+
+    MAPPINGPACKS = (
+        b'\xbc\xe0\x03\x00',            # 0
+        b'\xbd\xe0\x03\x00',            # 1
+        b'\xc6\xe0\x02\x00',            # 2
+        b'\xc7\xe0\x03\x00',            # 3
+        b'\xc8\xe0\x03\x00',            # 4
+        b'j\xf8\x00\x00',               # 5
+    )
+
+    @property
+    def MAPPINGDICTS(self):
+        return ({
+            'source': u'\ue0bc',
+            'target': u'\u115f\u1161\u11ae',
+            'comment': None,
+        }, {
+            'source': u'\ue0bd',
+            'target': u'\u115f\u1161\ud7cd',
+            'comment': None,
+        }, {
+            'source': u'\ue0c6',
+            'target': u'\u115f\u11a3',
+            'comment': None,
+        }, {
+            'source': u'\ue0c7',
+            'target': u'\u115f\u11a3\u11ae',
+            'comment': None,
+        }, {
+            'source': u'\ue0c8',
+            'target': u'\u115f\u1163\u11ab',
+            'comment': None,
+        }, {
+            'source': u'\uf86a',
+            'target': u'',
+            'comment': None,
+        })
+
+    @property
+    def MAPPINGDICTS_WITHOUT_COMMENT(self):
+        return ({
+            'source': u'\ue0bc',
+            'target': u'\u115f\u1161\u11ae',
+        }, {
+            'source': u'\ue0bd',
+            'target': u'\u115f\u1161\ud7cd',
+        }, {
+            'source': u'\ue0c6',
+            'target': u'\u115f\u11a3',
+        }, {
+            'source': u'\ue0c7',
+            'target': u'\u115f\u11a3\u11ae',
+        }, {
+            'source': u'\ue0c8',
+            'target': u'\u115f\u1163\u11ab',
+        }, {
+            'source': u'\uf86a',
+            'target': u'',
+        })
+
+
 class Tree:
 
-    MAPPINGS = (
-        'U+E0BC => U+115F U+1161 U+11AE',
-        'U+E0BD => U+115F U+1161 U+D7CD',
-        'U+E0C6 => U+115F U+11A3',
-        'U+E0C7 => U+115F U+11A3 U+11AE',
-        'U+E0C8 => U+115F U+1163 U+11AB',
-        'U+F86A =>',
-    )
+    MAPPINGS = _MAPPINGS
 
     @property
     def NODELIST(self):
@@ -49,6 +188,55 @@ class Tree:
             Node(parent=1, source=0x1163, target=None),
             Node(parent=7, source=0x11AB, target=0xE0C8),
         )
+
+    @property
+    def NODEDICTS(self):
+        return ({
+            # 0
+            'parent': -1,
+            'source': None,
+            'target': 0xF86A,
+        }, {
+            # 1
+            'parent': 0,
+            'source': 0x115F,
+            'target': None,
+        }, {
+            # 2
+            'parent': 1,
+            'source': 0x1161,
+            'target': None,
+        }, {
+            # 3
+            'parent': 2,
+            'source': 0x11AE,
+            'target': 0xE0BC,
+        }, {
+            # 4
+            'parent': 2,
+            'source': 0xD7CD,
+            'target': 0xE0BD,
+        }, {
+            # 5
+            'parent': 1,
+            'source': 0x11A3,
+            'target': 0xE0C6,
+        }, {
+            # 6
+            'parent': 5,
+            'source': 0x11AE,
+            'target': 0xE0C7,
+        }, {
+            # 7
+            'parent': 1,
+            'source': 0x1163,
+            'target': None,
+        }, {
+            # 8
+            'parent': 7,
+            'source': 0x11AB,
+            'target': 0xE0C8,
+        })
 
     NODEPACKS = (
         b'\xff\xff\x00\x00j\xf8',       # 0
@@ -92,3 +280,4 @@ class Tree:
 
 
 TREE = Tree()
+TABLE = Table()
