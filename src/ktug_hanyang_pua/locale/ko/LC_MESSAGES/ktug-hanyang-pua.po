@@ -21,31 +21,31 @@ msgstr ""
 
 #: src/ktug_hanyang_pua/cli.py:93 src/ktug_hanyang_pua/cli.py:201
 msgid "Rejecting to output binary to a terminal."
-msgstr ""
+msgstr "바이너리 형식은 터미널로 출력할 수 없습니다."
 
 #: src/ktug_hanyang_pua/cli.py:122
 msgid "table binary format requires filename."
-msgstr ""
+msgstr "테이블 바이너리 형식은 출력 파일 이름을 명시해야 합니다."
 
 #: src/ktug_hanyang_pua/cli.py:135 src/ktug_hanyang_pua/cli.py:156
 #, python-format
 msgid "%s mappings have been written."
-msgstr ""
+msgstr "%s 개의 매핑이 출력되었습니다."
 
 #: src/ktug_hanyang_pua/cli.py:164
 #, python-format
 msgid "%s lines have been written."
-msgstr ""
+msgstr "%s 개의 줄이 출력되었습니다."
 
 #: src/ktug_hanyang_pua/cli.py:168 src/ktug_hanyang_pua/cli.py:220
 #, python-format
 msgid "Not supported format for data model %s: %s"
-msgstr ""
+msgstr "자료 모형 %s는 출력 형식 %s를 지원하지 않습니다."
 
 #: src/ktug_hanyang_pua/cli.py:210 src/ktug_hanyang_pua/cli.py:216
 #, python-format
 msgid "%s nodes have been written."
-msgstr ""
+msgstr "%s 개의 노드가 출력되었습니다."
 
 #: src/ktug_hanyang_pua/cli.py:233
 msgid "output version information and exit"
@@ -57,23 +57,22 @@ msgstr "로그 출력 수준을 높입니다"
 
 #: src/ktug_hanyang_pua/cli.py:243
 msgid "Output file. The standard output will be used if ommitted."
-msgstr ""
+msgstr "출력 파일. 생략하면 표준 출력이 사용됩니다."
 
 #: src/ktug_hanyang_pua/cli.py:249
 msgid ""
 "Data model. Note that `table' model is suitable for encoding and `tree' "
 "model is suitable for decoding."
-msgstr ""
+msgstr "자료 모형(摸刑). `table' 모형은 인코딩에 적합하고 `tree' 모형은 디코딩에 적합합니다."
 
 #: src/ktug_hanyang_pua/cli.py:259
 msgid "Output format"
-msgstr ""
+msgstr "출력 형식(形式)."
 
 #: src/ktug_hanyang_pua/cli.py:264
 msgid "Switch source/targets in input mappings"
-msgstr ""
+msgstr "입력 매핑의 출발/도착 값을 바꾸어 처리합니다."
 
 #: src/ktug_hanyang_pua/cli.py:271
 msgid "Input file. The standard input will be used if ommitted."
-msgstr ""
-
+msgstr "입력 파일. 생략 시 표준 입력이 사용됩니다."
