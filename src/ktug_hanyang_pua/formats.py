@@ -158,8 +158,15 @@ class MappingPackFormat(object):
         target = mapping.target
         return self.structfmt.pack(source, target)
 
-    def parse(self, fp):
-        raise NotImplementedError()
+    def parse(self, byteseq):
+        if len(byteseq) != self.structfmt.size:
+            raise ValueError(len(byteseq))
+        source, target = self.structfmt.unpack(byteseq)
+        return Mapping(
+            source=source,
+            target=target,
+            comment=None,
+        )
 
 
 class MappingDictFormat(object):

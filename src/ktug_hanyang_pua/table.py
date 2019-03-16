@@ -22,6 +22,21 @@ from __future__ import print_function
 from .models import Mapping
 
 
+def switch_source_and_targets(mappings):
+    for mapping in mappings:
+        yield switch_source_and_target_of_mapping(mapping)
+
+
+def switch_source_and_target_of_mapping(mapping):
+    if isinstance(mapping, Mapping):
+        return Mapping(
+            source=mapping.target,
+            target=mapping.source,
+            comment=mapping.comment,
+        )
+    return mapping
+
+
 def split_table(mappings):
     for mapping in mappings:
         target = mapping.target

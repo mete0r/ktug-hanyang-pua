@@ -22,10 +22,8 @@ from __future__ import unicode_literals
 from argparse import ArgumentParser
 import gettext
 import io
-import json
 import logging
 import os.path
-import struct
 import sys
 
 # PYTHON_ARGCOMPLETE_OK
@@ -35,15 +33,16 @@ except ImportError:
     argcomplete = None
 
 from . import __version__
-from .formats import IterableFormat
-from .formats import LineFormat
-from .formats import MappingDictFormat
-from .formats import MappingPackFormat
-from .formats import NodePackFormat
-from .formats import NodeDictFormat
+from .fileformats.table_binary import load_mappings_as_binary_table
+from .fileformats.table_binary import dump_mappings_as_binary_table
+from .fileformats.table_json import dump_mappings_as_json_table
+from .fileformats.table_json import load_mappings_as_json_table
+from .fileformats.table_text import load_mappings_as_text_table
+from .fileformats.table_text import dump_mappings_as_text_table
+from .fileformats.tree_binary import dump_tree_as_binary
+from .fileformats.tree_json import dump_tree_as_json
 from .models import Mapping
-from .table import split_table
-from .table import make_groups
+from .table import switch_source_and_targets
 from .tree import build_tree
 
 PY3 = sys.version_info.major == 3
@@ -66,21 +65,24 @@ def main():
     configureLogging(args.verbose)
     logger.info('args: %s', args)
 
-    lineFormat = LineFormat()
-    inputFormat = IterableFormat(lineFormat)
-    mappingPackFormat = MappingPackFormat()
-    mappingDictFormat = MappingDictFormat()
-    nodePackFormat = NodePackFormat()
-    nodeDictFormat = NodeDictFormat()
-
     if args.INPUT_FILE is not None:
         input_fp = io.open(args.INPUT_FILE, 'r', encoding='utf-8')
     else:
         input_fp = sys.stdin
     with input_fp:
-        parsed = (
-            line for line in inputFormat.parse(input_fp)
-        )
+        if args.input_format == 'text':
+            parsed = load_mappings_as_text_table(input_fp)
+        elif args.input_format == 'binary':
+            if PY3:
+                input_fp = input_fp.buffer
+            parsed = load_mappings_as_binary_table(input_fp)
+        elif args.input_format == 'json':
+            parsed = load_mappings_as_json_table(input_fp)
+        else:
+            logger.error(
+                _('Unsupported input format: %s', args.input_format)
+            )
+            raise SystemExit(1)
 
         if args.output_file is not None:
             output_fp = io.open(args.output_file, 'w', encoding='utf-8')
@@ -88,6 +90,9 @@ def main():
             output_fp = sys.stdout
         with output_fp:
             if args.data_model == 'table':
+                if args.switch:
+                    parsed = switch_source_and_targets(parsed)
+
                 if args.output_format == 'binary':
                     if output_fp.isatty():
                         logger.error(
@@ -100,63 +105,10 @@ def main():
                         line for line in parsed
                         if isinstance(line, Mapping)
                     )
-                    if args.switch:
-                        mappings = (
-                            Mapping(
-                                source=m.target,
-                                target=m.source,
-                                comment=m.comment
-                            )
-                            for m in mappings
-                        )
-                    mappings = (
-                        Mapping(
-                            source=m.source[0],
-                            target=m.target,
-                            comment=m.comment,
-                        )
-                        for m in mappings
+                    n_groups, n_mappings = dump_mappings_as_binary_table(
+                        mappings,
+                        output_fp
                     )
-                    mappings = sorted(mappings)
-                    mappings = list(mappings)
-                    groups = make_groups(m.source for m in mappings)
-                    mappings = split_table(mappings)
-                    mappings = list(mappings)
-                    if args.output_file is None:
-                        logger.error(
-                            _('table binary format requires filename.')
-                        )
-                        raise SystemExit(1)
-
-                    # 그룹 갯수
-                    n_groups = len(groups)
-                    output_fp.write(struct.pack('<H', n_groups))
-
-                    # 그룹
-                    grouplengths = tuple(
-                        end - start + 1 for start, end in groups
-                    )
-                    output_fp.write(
-                        struct.pack(
-                            '<{}H'.format(len(groups)),
-                            *grouplengths
-                        )
-                    )
-
-                    # 매핑
-                    targets = []
-                    for mapping, target, comment in mappings:
-                        targets.extend(target)
-                    for n_mappings, mapping in enumerate(mappings, 1):
-                        mapping, target, comment = mapping
-                        byteseq = mappingPackFormat.format(mapping)
-                        output_fp.write(byteseq)
-
-                    # 자모 문자열
-                    targetfmt = '<{}H'.format(len(targets))
-                    target = struct.pack(targetfmt, *targets)
-                    output_fp.write(target)
-
                     logger.info(
                         _('%s groups of %s mappings have been written.'),
                         n_groups,
@@ -167,27 +119,14 @@ def main():
                         line for line in parsed
                         if isinstance(line, Mapping)
                     )
-                    mappings = (
-                        Mapping(
-                            source=m.source[0],
-                            target=m.target,
-                            comment=m.comment,
-                        )
-                        for m in mappings
+                    n_mappings = dump_mappings_as_json_table(
+                        mappings, output_fp
                     )
-                    mappings = [
-                        mappingDictFormat.format(mapping)
-                        for mapping in mappings
-                    ]
-                    json.dump(mappings, output_fp, indent=2, sort_keys=True)
                     logger.info(
-                        _('%s mappings have been written.'), len(mappings)
+                        _('%s mappings have been written.'), n_mappings,
                     )
                 elif args.output_format == 'text':
-                    for n, line in enumerate(parsed, 1):
-                        lineFormatted = lineFormat.format(line)
-                        output_fp.write(lineFormatted)
-                        output_fp.write('\n')
+                    n = dump_mappings_as_text_table(parsed, output_fp)
                     logger.info(
                         _('%s lines have been written.'), n
                     )
@@ -231,17 +170,14 @@ def main():
                         raise SystemExit(1)
                     if PY3:
                         output_fp = output_fp.buffer
-                    for n, node in enumerate(tree, 1):
-                        node = nodePackFormat.format(node)
-                        output_fp.write(node)
+                    n = dump_tree_as_binary(tree, output_fp)
                     logger.info(
                         _('%s nodes have been written.'), n
                     )
                 elif args.output_format == 'json':
-                    jsonlist = [nodeDictFormat.format(node) for node in tree]
-                    json.dump(jsonlist, output_fp, indent=2, sort_keys=True)
+                    n_nodes = dump_tree_as_json(tree, output_fp)
                     logger.info(
-                        _('%s nodes have been written.'), len(jsonlist)
+                        _('%s nodes have been written.'), n_nodes,
                     )
                 else:
                     logger.error(
@@ -278,6 +214,13 @@ def main_argparse():
             'Data model. Note that `table\' model is suitable for encoding '
             'and `tree\' model is suitable for decoding.'
         ),
+    )
+    parser.add_argument(
+        '--input-format',
+        action='store',
+        choices=('text', 'binary', 'json'),
+        default='text',
+        help=_('Input format'),
     )
     parser.add_argument(
         '-F', '--output-format',

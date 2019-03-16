@@ -111,6 +111,7 @@ setup_info = {
 
     'packages': [
         'ktug_hanyang_pua',
+        'ktug_hanyang_pua.fileformats',
     ],
     # do not use '.'; just omit to specify setup.py directory
     'package_dir': {
