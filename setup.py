@@ -107,7 +107,7 @@ setup_info = {
     'author': 'mete0r',
     'author_email': 'mete0r@sarangbang.or.kr',
     'license': 'GNU Affero General Public License v3 or later (AGPLv3+)',
-    # 'url': 'https://github.com/mete0r/ktug-hanyang-pua',
+    'url': 'https://github.com/mete0r/ktug-hanyang-pua',
 
     'packages': [
         'ktug_hanyang_pua',
@@ -154,11 +154,14 @@ setup_info = {
         'License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)',  # noqa
         # 'Operating System :: OS Independent',
         # 'Programming Language :: Python',
-        # 'Programming Language :: Python :: 2.7',
-        # 'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.4',
         # 'Programming Language :: Python :: Implementation :: CPython',
     ],
     'keywords': [
+        'KTUG',
+        'Hanyang',
+        'PUA',
     ],
     'zip_safe': False,
 }
