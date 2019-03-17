@@ -65,6 +65,15 @@ class TextTableFileFormatTest(TestCase):
             tuple(line.rstrip() for line in output_fp),
         )
 
+        output_fp = ioclass()
+        n = dump_mappings_as_text_table((), output_fp)
+        self.assertEqual(0, n)
+        output_fp.seek(0)
+        self.assertEqual(
+            (),
+            tuple(line.rstrip() for line in output_fp),
+        )
+
 
 class JsonTableFileFormatTest(TestCase):
 

@@ -33,6 +33,7 @@ def load_mappings_as_text_table(input_fp):
 
 def dump_mappings_as_text_table(mappings, output_fp):
     lineFormat = LineFormat()
+    n = 0
     for n, line in enumerate(mappings, 1):
         lineFormatted = lineFormat.format(line)
         output_fp.write(lineFormatted)

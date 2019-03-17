@@ -4,7 +4,7 @@ Changes
 0.1.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix dump_mappings_as_text_table().
 
 
 0.1.0 (2019-03-17)
