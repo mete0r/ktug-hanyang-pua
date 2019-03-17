@@ -56,6 +56,66 @@ else:
     _ = t.ugettext
 
 
+def open_input(filename, format):
+    if format == 'text':
+        if filename is not None:
+            if PY3:
+                return io.open(filename, 'r', encoding='utf-8')
+            else:
+                # Note: parsec in Python 2 requires str
+                return io.open(filename, 'rb')
+        else:
+            return sys.stdin
+    if format == 'binary':
+        if filename is not None:
+            return io.open(filename, 'rb')
+        else:
+            if PY3:
+                return sys.stdin.buffer
+            else:
+                return sys.stdin
+    if format == 'json':
+        if filename is not None:
+            return io.open(filename, 'r', encoding='utf-8')
+        else:
+            return sys.stdin
+    logger.error(
+        _('Unsupported input format: %s', format)
+    )
+    raise SystemExit(1)
+
+
+def open_output(filename, output_format):
+    if output_format == 'text':
+        if filename is not None:
+            if PY3:
+                return io.open(filename, 'w', encoding='utf-8')
+            else:
+                return io.open(filename, 'wb')
+        else:
+            return sys.stdout
+    if output_format == 'binary':
+        if filename is not None:
+            return io.open(filename, 'wb')
+        else:
+            if PY3:
+                return sys.stdout.buffer
+            else:
+                return sys.stdout
+    if output_format == 'json':
+        if filename is not None:
+            if PY3:
+                return io.open(filename, 'w', encoding='utf-8')
+            else:
+                return io.open(filename, 'wb')
+        else:
+            return sys.stdout
+    logger.error(
+        _('Unsupported output format: %s', output_format)
+    )
+    raise SystemExit(1)
+
+
 def main():
     gettext.gettext = t.gettext
     parser = main_argparse()
@@ -65,16 +125,10 @@ def main():
     configureLogging(args.verbose)
     logger.info('args: %s', args)
 
-    if args.INPUT_FILE is not None:
-        input_fp = io.open(args.INPUT_FILE, 'r', encoding='utf-8')
-    else:
-        input_fp = sys.stdin
-    with input_fp:
+    with open_input(args.INPUT_FILE, args.input_format) as input_fp:
         if args.input_format == 'text':
             parsed = load_mappings_as_text_table(input_fp)
         elif args.input_format == 'binary':
-            if PY3:
-                input_fp = input_fp.buffer
             parsed = load_mappings_as_binary_table(input_fp)
         elif args.input_format == 'json':
             parsed = load_mappings_as_json_table(input_fp)
@@ -84,11 +138,7 @@ def main():
             )
             raise SystemExit(1)
 
-        if args.output_file is not None:
-            output_fp = io.open(args.output_file, 'w', encoding='utf-8')
-        else:
-            output_fp = sys.stdout
-        with output_fp:
+        with open_output(args.output_file, args.output_format) as output_fp:
             if args.data_model == 'table':
                 if args.switch:
                     parsed = switch_source_and_targets(parsed)
@@ -99,8 +149,6 @@ def main():
                             _('Rejecting to output binary to a terminal.')
                         )
                         raise SystemExit(1)
-                    if PY3:
-                        output_fp = output_fp.buffer
                     mappings = (
                         line for line in parsed
                         if isinstance(line, Mapping)
@@ -168,8 +216,6 @@ def main():
                             _('Rejecting to output binary to a terminal.')
                         )
                         raise SystemExit(1)
-                    if PY3:
-                        output_fp = output_fp.buffer
                     n = dump_tree_as_binary(tree, output_fp)
                     logger.info(
                         _('%s nodes have been written.'), n
