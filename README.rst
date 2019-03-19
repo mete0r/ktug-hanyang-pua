@@ -1,18 +1,16 @@
 ktug-hanyang-pua
 ================
 
-KTUG HanYang PUA conversion table reader
+KTUG Hanyang PUA table reader/writer
+
+This package provides reader/writer utility for files from `KTUG Hanyang PUA table project`_.
+
+Note that this package does not handle HanyangPUA-to-UnicodeJamo conversion itself.
+
+.. _KTUG Hanyang PUA table project: http://faq.ktug.org/faq/HanyangPuaTableProject
 
 
-Production environment
-----------------------
-
-To setup production environment::
-
-   python bootstrap-virtualenv.py
-
-Maintenance note: you should populate virtualenv_support/ with wheels for
-production environment, i.e. packages specified in requirements.txt
+- Documentation: https://ktug-hanyang-pua.readthedocs.org
 
 
 Development environment
@@ -20,7 +18,7 @@ Development environment
 
 To setup development environment::
 
-   virtualenv -p python2.7 .
+   virtualenv -p python3.4 .
    bin/pip install -U setuptools pip pip-tools
    make
-   make test
+   make test test-report

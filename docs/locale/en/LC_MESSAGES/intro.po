@@ -23,7 +23,7 @@ msgid "ktug-hanyang-pua"
 msgstr ""
 
 #: ../../../README.rst:4
-msgid "KTUG HanYang PUA conversion table reader"
+msgid "KTUG Hanyang PUA table reader/writer"
 msgstr ""
 
 #: ../../../README.rst:8

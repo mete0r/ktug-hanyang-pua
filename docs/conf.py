@@ -57,7 +57,7 @@ master_doc = 'index'
 project = u'ktug-hanyang-pua'
 copyright = u'2015-2018, mete0r'
 author = u'mete0r'
-description = u'KTUG HanYang PUA conversion table reader'
+description = u'KTUG Hanyang PUA table reader/writer'
 doc_title = project
 
 # The version info for the project you're documenting, acts as replacement for

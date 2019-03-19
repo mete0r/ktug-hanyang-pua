@@ -1810,7 +1810,7 @@ def create_bootstrap_script(extra_text, python_version=''):
 
 # -*- coding: utf-8 -*-
 #
-#   ktug-hanyang-pua: KTUG HanYang PUA conversion table reader
+#   ktug-hanyang-pua: KTUG Hanyang PUA table reader/writer
 #   Copyright (C) 2015-2017 mete0r <mete0r@sarangbang.or.kr>
 #
 #   This program is free software: you can redistribute it and/or modify

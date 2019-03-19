@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   ktug-hanyang-pua: KTUG HanYang PUA conversion table reader
+#   ktug-hanyang-pua: KTUG Hanyang PUA table reader/writer
 #   Copyright (C) 2015-2017 mete0r <mete0r@sarangbang.or.kr>
 #
 #   This program is free software: you can redistribute it and/or modify
@@ -100,7 +100,7 @@ tests_require = readfile('requirements/test.in')
 setup_info = {
     'name': 'ktug-hanyang-pua',
     'version': get_version(),
-    'description': 'KTUG HanYang PUA conversion table reader',
+    'description': 'KTUG Hanyang PUA table reader/writer',
     'long_description': '\n'.join([readfile('README.rst'),
                                    readfile('CHANGES.rst')]),
 
