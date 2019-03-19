@@ -144,31 +144,6 @@ class LineFormat(object):
         return '%%%{}'.format(comment.text)
 
 
-class MappingPackFormat(object):
-
-    __slots__ = (
-        'structfmt',
-    )
-
-    def __init__(self):
-        self.structfmt = Struct('<HH')
-
-    def format(self, mapping):
-        source = mapping.source
-        target = mapping.target
-        return self.structfmt.pack(source, target)
-
-    def parse(self, byteseq):
-        if len(byteseq) != self.structfmt.size:
-            raise ValueError(len(byteseq))
-        source, target = self.structfmt.unpack(byteseq)
-        return Mapping(
-            source=source,
-            target=target,
-            comment=None,
-        )
-
-
 class MappingDictFormat(object):
 
     __slots__ = (

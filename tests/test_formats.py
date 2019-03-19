@@ -259,46 +259,6 @@ class MappingDictFormat(TestCase):
             )
 
 
-class MappingPackFormatTest(TestCase):
-
-    def make_one(self):
-        from ktug_hanyang_pua.formats import MappingPackFormat
-        return MappingPackFormat()
-
-    def test_format(self):
-        from ktug_hanyang_pua.models import Mapping
-        packFormat = self.make_one()
-
-        targets = []
-        for index, mapping in enumerate(TABLE.MAPPINGLIST):
-            targets.extend(mapping.target)
-            mapping = Mapping(
-                source=mapping.source[0],
-                target=len(mapping.target),
-                comment=mapping.comment,
-            )
-            binary = packFormat.format(mapping)
-            self.assertEqual(
-                TABLE.MAPPINGPACKS[index],
-                binary
-            )
-
-            parsed = packFormat.parse(binary)
-            parsed = Mapping(
-                source=tuple([parsed.source]),
-                target=tuple(
-                    targets[-parsed.target:]
-                    if parsed.target != 0
-                    else []
-                ),
-                comment=parsed.comment,
-            )
-            self.assertEqual(
-                TABLE.MAPPINGLIST[index],
-                parsed,
-            )
-
-
 class NodeDictFormatTest(TestCase):
 
     def make_one(self):

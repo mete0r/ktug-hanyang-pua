@@ -21,7 +21,6 @@ from __future__ import print_function
 import logging
 import struct
 
-from ..formats import MappingPackFormat
 from ..models import Mapping
 from ..table import split_table
 from ..table import make_groups
@@ -45,8 +44,6 @@ def write_struct(fp, struct, tpl):
 
 
 def load_mappings_as_binary_table(input_fp):
-    packFormat = MappingPackFormat()
-    packSize = packFormat.structfmt.size
 
     # 그룹 갯수
     n_groups = read_struct(input_fp, ushort)[0]
@@ -84,7 +81,6 @@ def load_mappings_as_binary_table(input_fp):
 
 
 def dump_mappings_as_binary_table(mappings, output_fp):
-    mappingPackFormat = MappingPackFormat()
 
     mappings = (
         Mapping(
