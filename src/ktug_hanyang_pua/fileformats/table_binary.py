@@ -30,38 +30,51 @@ from ..table import make_groups
 logger = logging.getLogger(__name__)
 
 
+ushort = struct.Struct('<H')
+ushort_pair = struct.Struct('<2H')
+
+
+def read_struct(fp, struct):
+    data = fp.read(struct.size)
+    return struct.unpack(data)
+
+
+def write_struct(fp, struct, tpl):
+    data = struct.pack(*tpl)
+    fp.write(data)
+
+
 def load_mappings_as_binary_table(input_fp):
     packFormat = MappingPackFormat()
     packSize = packFormat.structfmt.size
 
     # 그룹 갯수
-    n_groups_struct = struct.Struct('<H')
-    data = input_fp.read(n_groups_struct.size)
-    if len(data) != n_groups_struct.size:
-        raise Exception()
-    n_groups = n_groups_struct.unpack(data)[0]
+    n_groups = read_struct(input_fp, ushort)[0]
 
     # 그룹
-    grouplengths_structfmt = '<{}H'.format(n_groups)
-    grouplengths_struct = struct.Struct(grouplengths_structfmt)
-    data = input_fp.read(grouplengths_struct.size)
-    grouplengths = grouplengths_struct.unpack(data)
+    groupheaders = [
+        read_struct(input_fp, ushort_pair)
+        for i in range(n_groups)
+    ]
 
     # 매핑
     mappings = []
-    for grouplength in grouplengths:
+    mappingtargetlen_struct = struct.Struct('<H')
+    for groupstart, grouplength in groupheaders:
         for i in range(grouplength):
-            data = input_fp.read(packSize)
-            mapping = packFormat.parse(data)
+            source = groupstart + i
+            targetlen = read_struct(input_fp, mappingtargetlen_struct)[0]
+            mapping = Mapping(
+                source=source,
+                target=targetlen,
+                comment=None,
+            )
             mappings.append(mapping)
 
     # 자모 문자열
     for mapping in mappings:
         target_struct = struct.Struct('<{}H'.format(mapping.target))
-        data = input_fp.read(target_struct.size)
-        if len(data) != target_struct.size:
-            raise Exception()
-        target = target_struct.unpack(data)
+        target = read_struct(input_fp, target_struct)
         source = (mapping.source,)
         yield Mapping(source=source, target=target, comment=None)
 
@@ -89,18 +102,12 @@ def dump_mappings_as_binary_table(mappings, output_fp):
 
     # 그룹 갯수
     n_groups = len(groups)
-    output_fp.write(struct.pack('<H', n_groups))
+    write_struct(output_fp, ushort, (n_groups, ))
 
     # 그룹
-    grouplengths = tuple(
-        end - start + 1 for start, end in groups
-    )
-    output_fp.write(
-        struct.pack(
-            '<{}H'.format(len(groups)),
-            *grouplengths
-        )
-    )
+    for groupstart, groupend in groups:
+        grouplength = groupend - groupstart + 1
+        write_struct(output_fp, ushort_pair, (groupstart, grouplength))
 
     # 매핑
     targets = []
@@ -108,8 +115,7 @@ def dump_mappings_as_binary_table(mappings, output_fp):
         targets.extend(target)
     for n_mappings, mapping in enumerate(mappings, 1):
         mapping, target, comment = mapping
-        byteseq = mappingPackFormat.format(mapping)
-        output_fp.write(byteseq)
+        write_struct(output_fp, ushort, (mapping.target, ))  # target length
 
     # 자모 문자열
     targetfmt = '<{}H'.format(len(targets))

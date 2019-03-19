@@ -4,7 +4,7 @@ Changes
 0.1.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Change table binary format.
 
 
 0.1.1 (2019-03-17)
