@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.1.2 (unreleased)
+0.1.2 (2019-03-19)
 ------------------
 
 - Change table binary format.
