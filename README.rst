@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmete0r%2Fktug-hanyang-pua.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmete0r%2Fktug-hanyang-pua?ref=badge_shield)
+
 ktug-hanyang-pua
 ================
 
@@ -22,3 +24,7 @@ To setup development environment::
    bin/pip install -U setuptools pip pip-tools
    make
    make test test-report
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmete0r%2Fktug-hanyang-pua.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmete0r%2Fktug-hanyang-pua?ref=badge_large)
