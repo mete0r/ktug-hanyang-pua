@@ -18,7 +18,7 @@ Development environment
 
 To setup development environment::
 
-   virtualenv -p python3.4 .
+   virtualenv -p python3.8 .
    bin/pip install -U setuptools pip pip-tools
    make
    make test test-report
